@@ -32,6 +32,15 @@ abstract contract BaseRegistry is IRegistry, ERC1155Singleton {
         _;
     }
 
+    // a modifier for onlyTokenOwner
+    modifier onlyTokenOwnerOrOperator(uint256 tokenId) {
+        address owner = ownerOf(tokenId);
+        if (!(owner == msg.sender || isApprovedForAll(owner, msg.sender))) {
+            revert AccessDenied(tokenId, owner, msg.sender);
+        }
+        _;
+    }
+
     modifier withSubregistryFlags(uint256 tokenId, uint96 mask, uint96 expected) {
         (, uint96 flags) = datastore.getSubregistry(tokenId);
         if (flags & mask != expected) {
@@ -61,6 +70,11 @@ abstract contract BaseRegistry is IRegistry, ERC1155Singleton {
 
     function _mint(uint256 tokenId, address owner, IRegistry registry, uint96 flags) internal {
         _mint(owner, tokenId, 1, "");
+        datastore.setSubregistry(tokenId, address(registry), flags);
+    }
+
+    function _update(uint256 tokenId, address owner, IRegistry registry, uint96 flags) internal {
+        _update(owner, tokenId, 1, "");
         datastore.setSubregistry(tokenId, address(registry), flags);
     }
 

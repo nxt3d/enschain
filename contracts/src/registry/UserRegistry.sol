@@ -10,7 +10,7 @@ import {IRegistryDatastore} from "./IRegistryDatastore.sol";
 import {BaseRegistry} from "./BaseRegistry.sol";
 import {NameUtils} from "../utils/NameUtils.sol";
 
-contract UserRegistry is BaseRegistry {
+contract UserRegistry is BaseRegistry, IUserRegistry {
     uint96 public constant SUBREGISTRY_FLAGS_MASK = 0x1;
     uint96 public constant SUBREGISTRY_FLAG_LOCKED = 0x1;
 
