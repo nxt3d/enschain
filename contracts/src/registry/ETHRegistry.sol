@@ -57,7 +57,7 @@ contract ETHRegistry is BaseRegistry, AccessControl {
             revert NameAlreadyRegistered(label);
         }
         
-        _mint(tokenId, owner, registry, uint96(flags) | (uint96(expires) << 32));
+        _mint(tokenId, owner, registry, address(0), uint96(flags) | (uint96(expires) << 32), 0);
         emit NewSubname(label);
         return tokenId;
     }
@@ -82,20 +82,21 @@ contract ETHRegistry is BaseRegistry, AccessControl {
         return (uint64(_flags >> 32), uint32(_flags));
     }
 
-    function lock(uint256 tokenId, uint32 flags)
-        external
-        onlyTokenOwner(tokenId)
-        withSubregistryFlags(tokenId, FLAG_FLAGS_LOCKED, 0)
-    {
-        (address subregistry, uint96 oldFlags) = datastore.getSubregistry(tokenId);
-        uint96 newFlags = oldFlags | (flags & FLAGS_MASK);
-        if(newFlags != oldFlags) {
-            address owner = ownerOf(tokenId);
-            _burn(owner, tokenId, 1);
-            uint256 newTokenId = (tokenId & ~uint256(FLAGS_MASK)) | (newFlags & FLAGS_MASK);
-            _mint(newTokenId, owner, IRegistry(subregistry), newFlags);
-        }
-    }
+    // function lock(uint256 tokenId, uint32 flags)
+    //     external
+    //     onlyTokenOwner(tokenId)
+    //     withSubregistryFlags(tokenId, FLAG_FLAGS_LOCKED, 0)
+    // {
+    //     (address subregistry, uint96 oldFlags) = datastore.getSubregistry(tokenId);
+    //     (address resolver, uint96 resolverFlags) = datastore.getResolver(tokenId);
+    //     uint96 newFlags = oldFlags | (flags & FLAGS_MASK);
+    //     if(newFlags != oldFlags) {
+    //         address owner = ownerOf(tokenId);
+    //         _burn(owner, tokenId, 1);
+    //         uint256 newTokenId = (tokenId & ~uint256(FLAGS_MASK)) | (newFlags & FLAGS_MASK);
+    //         _mint(newTokenId, owner, IRegistry(subregistry), resolver, newFlags, resolverFlags);
+    //     }
+    // }
 
     function setSubregistry(
         uint256 tokenId,

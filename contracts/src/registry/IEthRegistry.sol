@@ -3,7 +3,7 @@ pragma solidity >=0.8.13;
 
 import {IRegistry} from "./IRegistry.sol";
 
-interface IEthRegistry is IRegistry {
+interface IETHRegistry is IRegistry {
     function uri(uint256 tokenId) external pure returns (string memory);
     function ownerOf(uint256 tokenId) external view returns (address);
     function register(

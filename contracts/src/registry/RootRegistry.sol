@@ -27,7 +27,7 @@ contract RootRegistry is BaseRegistry, AccessControl {
         onlyRole(SUBDOMAIN_ISSUER_ROLE)
     {
         uint256 tokenId = uint256(keccak256(bytes(label)));
-        _mint(tokenId, owner, registry, locked ? SUBREGISTRY_FLAG_LOCKED : 0);
+        _mint(tokenId, owner, registry, address(0),locked ? SUBREGISTRY_FLAG_LOCKED : 0, 0);
         emit NewSubname(label);
     }
 

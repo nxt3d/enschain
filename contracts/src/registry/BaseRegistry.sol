@@ -68,13 +68,18 @@ abstract contract BaseRegistry is IRegistry, ERC1155Singleton {
             super.supportsInterface(interfaceId);
     }
 
-    function _mint(uint256 tokenId, address owner, IRegistry registry, uint96 flags) internal {
-        _mint(owner, tokenId, 1, "");
-        datastore.setSubregistry(tokenId, address(registry), flags);
+    function _mint(uint256 tokenId, address owner, IRegistry registry, address resolver, uint96 registryFlags, uint96 resolverFlags) internal {
+        super._mint(owner, tokenId, 1, "");
+        datastore.setSubregistry(tokenId, address(registry), registryFlags);
+        datastore.setResolver(tokenId, resolver, resolverFlags);
     }
 
-    function _update(uint256 tokenId, address owner, IRegistry registry, uint96 flags) internal {
-        _update(owner, tokenId, 1, "");
+    function _update(uint256 tokenId, address from, address owner, IRegistry registry, uint96 flags) internal {
+        // define an array of uint256, with a single 1 element
+        uint256[] memory amounts = new uint256[](1);
+        // define an array of uint256 memory ids, with a single tokenId element
+        uint256[] memory ids = new uint256[](tokenId);
+        super._update(from, owner, ids, amounts);
         datastore.setSubregistry(tokenId, address(registry), flags);
     }
 

@@ -150,7 +150,7 @@ abstract contract ERC1155Singleton is Context, ERC165, IERC1155Singleton, IERC11
 
             if(value > 0) {
                 address owner = _owners[id];
-                if(owner != from) {
+                if(owner != from && from != address(0)) { // @audit : I needed to add a check if the from address is zero becuase of minting. 
                     revert ERC1155InsufficientBalance(from, 0, value, id);
                 } else if(value > 1) {
                     revert ERC1155InsufficientBalance(from, 1, value, id);
